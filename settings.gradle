@@ -1,0 +1,3 @@
+rootProject.name = 'gundam-auth'
+
+include 'auth-web'
