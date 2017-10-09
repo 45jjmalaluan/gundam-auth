@@ -1,19 +1,32 @@
-<configuration>    
-    <appender name="FILE_ROOT"
-              class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>logs/gundam-auth/gundam-auth.log</file>
-        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <!-- daily rollover -->
-            <fileNamePattern>logs/gundam-auth/gundam-auth.%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- keep 7 days' worth of history -->
-            <maxHistory>7</maxHistory>
-        </rollingPolicy>
+<configuration>
+    <property resource="application.properties" />
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>[%level] %d{HH:mm:ss.SSS} %logger %msg%n</pattern>
         </encoder>
     </appender>
-    
+
+    <if condition='isDefined("file.appender")'>
+        <then>
+            <appender name="FILE_ROOT"
+                      class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${log.path}/gundam-auth/gundam-auth.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+                    <!-- daily rollover -->
+                    <fileNamePattern>${log.path}/gundam-auth/gundam-auth.%d{yyyy-MM-dd}.log</fileNamePattern>
+                    <!-- keep 7 days' worth of history -->
+                    <maxHistory>7</maxHistory>
+                </rollingPolicy>
+                <encoder>
+                    <pattern>[%level] %d{HH:mm:ss.SSS} %logger %msg%n</pattern>
+                </encoder>
+            </appender>
+        </then>
+    </if>
+
     <root level="DEBUG">
-        <appender-ref ref="FILE_ROOT" />
+        ${stdout.appender}
+        ${file.appender}
     </root>
 </configuration>

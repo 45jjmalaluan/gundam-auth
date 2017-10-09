@@ -1,29 +1,47 @@
 apply plugin: 'war'
 apply plugin: 'spring-boot'
+apply plugin: 'com.google.cloud.tools.appengine' // App Engine tasks
 
 project.description = 'Auth web'
 
 repositories {
+	jcenter()
 	mavenCentral()
 }
 
 dependencies {
-	compile("org.springframework.boot:spring-boot-starter-web:1.4.1.RELEASE")
+	compile "$springframeworkBootGroup:spring-boot-starter-web:$springframeworkBootVersion"
+	compile("com.google.appengine:appengine:+")
 	// security
 	compile("org.springframework.security.oauth:spring-security-oauth2:2.0.11.RELEASE")
 	// server
-	providedCompile("org.springframework.boot:spring-boot-starter-tomcat:1.4.1.RELEASE")
+	providedCompile "$springframeworkBootGroup:spring-boot-starter-tomcat:$springframeworkBootVersion"
+	// LOGBack
+	compile 'org.codehaus.janino:janino:3.0.7'
 }
 
 war {
 	archiveName 'gundam-auth.war'
 }
 
+appengine { // App Engine tasks configuration
+	run { // local (dev_appserver) configuration (standard environments only)
+		port = 7171 // default
+	}
+
+	deploy { // deploy configuration
+		stopPreviousVersion = true // default - stop the current version
+		promote = true             // default - & make this the current version
+	}
+}
+
 buildscript {
 	dependencies {
-		classpath("org.springframework.boot:spring-boot-gradle-plugin:1.4.1.RELEASE")
+		classpath "$springframeworkBootGroup:spring-boot-gradle-plugin:$springframeworkBootVersion"
+		classpath("com.google.cloud.tools:appengine-gradle-plugin:+") // latest App Engine Gradle tasks
 	}
 	repositories {
+		jcenter()
 		mavenCentral()
 	}
 }
