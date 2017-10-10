@@ -7,14 +7,14 @@
         </encoder>
     </appender>
 
-    <if condition='isDefined("file.appender")'>
+    <if condition='property("include.file.appender").equals("true")'>
         <then>
             <appender name="FILE_ROOT"
                       class="ch.qos.logback.core.rolling.RollingFileAppender">
-                <file>${log.path}/gundam-auth/gundam-auth.log</file>
+                <file>${log.file.path}/gundam-auth/gundam-auth.log</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
                     <!-- daily rollover -->
-                    <fileNamePattern>${log.path}/gundam-auth/gundam-auth.%d{yyyy-MM-dd}.log</fileNamePattern>
+                    <fileNamePattern>${log.file.path}/gundam-auth/gundam-auth.%d{yyyy-MM-dd}.log</fileNamePattern>
                     <!-- keep 7 days' worth of history -->
                     <maxHistory>7</maxHistory>
                 </rollingPolicy>
@@ -26,7 +26,15 @@
     </if>
 
     <root level="DEBUG">
-        ${stdout.appender}
-        ${file.appender}
+        <if condition='property("include.stdout.appender").equals("true")'>
+            <then>
+                <appender-ref ref="STDOUT" />
+            </then>
+        </if>
+        <if condition='property("include.file.appender").equals("true")'>
+            <then>
+                <appender-ref ref="FILE_ROOT" />
+            </then>
+        </if>
     </root>
 </configuration>
